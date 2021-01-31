@@ -49,5 +49,6 @@ export default {
   'menu.editor.flow': '流程编辑器',
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
-  'menu.fund.fundinfo-list':'关注指数'
+  'menu.fund.fundinfo-list':'关注指数',
+  'menu.stock.stockinfo-list':'股票信息'
 };

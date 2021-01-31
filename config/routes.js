@@ -28,6 +28,12 @@ export default [{
                 component: './FundInfo',
               },
               {
+                name: 'stock.stockinfo-list',
+                icon: 'stock',
+                path: '/stockinfolist',
+                component: './StockInfo',
+              },
+              {
                 component: './404',
               },
             ],

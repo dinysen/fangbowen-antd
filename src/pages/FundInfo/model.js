@@ -6,39 +6,43 @@
  * @Description: file content
  * @FilePath: \bdi-antd\src\models\datasource.js
  */
-import { saveDatasource,updateDatasource } from './service';
+import { saveFund,updateFund } from './service';
 import { message } from 'antd';
 
 const initialState = {
-    enable : true,//表单可以被提交
     data : {},//表单数据，getO的时候拿的
-    modalMainVisible : false
+    modalMainVisible : false,//信息表单
+    modalPartListVisible : false//成分股列表
 }
 
 const BaseModel = {
-    namespace: 'datasource',
+    namespace: 'fund',
     state: initialState,
     effects: {
         //保存数据源
-        *saveDatasource({ payload }, { call, put }) {
-            const response = yield call(saveDatasource, payload);
+        *saveFund({ payload }, { call, put }) {
+            const response = yield call(saveFund, payload);
             yield put({
-                type: 'saveDatasourceReducer'
+                type: 'saveFundReducer'
             });
         },
         //更新数据源
-        *updateDatasource({ payload }, { call, put }) {
-            const response = yield call(updateDatasource, payload);
+        *updateFund({ payload }, { call, put }) {
+            const response = yield call(updateFund, payload);
         },
     },
     reducers: {
-        saveDatasourceReducer(state, action) {
-            return { ...state, enable : false };//禁用提交按钮，防止重复提交
+        saveFundReducer(state, action) {
+            return { ...state };
         },
         setModalMainVisible(state,action){
             return {...state,modalMainVisible : action.payload}
         },
+        setPartListVisible(state,action){
+            return {...state,modalPartListVisible : action.payload}
+        },
         clear(){
+            console.log("clear");
             return initialState;
         }
     },

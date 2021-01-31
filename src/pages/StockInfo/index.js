@@ -1,51 +1,63 @@
-import { DeleteOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Divider,message, Popconfirm ,Modal,Card,Upload } from 'antd';
+import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
+import { Button, Divider,message, Popconfirm ,Modal,Upload } from 'antd';
 import React, { useState, useRef ,useEffect} from 'react';
 import ProTable from '@ant-design/pro-table';
 import { connect } from 'umi';
-import { queryFundPart,delPart } from '@/pages/FundInfo/service';
+import { queryStock,delFund } from './service';
 
 import TYPES from '@/types/index';
 
 const TableList = (props) => {
-    const { dispatch,fund,data } = props;
+    const { dispatch,stock } = props;
     const [sorter, setSorter] = useState('');
+    const [data, setData] = useState({});
     const [importLoading,setImportLoading] = useState(false);
     const formRef = useRef();
     const actionRef = useRef();
 
-    //getO
-    useEffect(() => {
-    }, []);
-
     const queryData = (params,sort,filter) => {
-        params.indexid = data.id;
-        return queryFundPart(params);
+        return queryStock(params);
     };
 
-    const delData = (ids) =>{
-        delPart({ids}).then(data=>{
-            actionRef.current.reload();
-        });
-    }
+    const columns = [{
+        title: '序号',
+        dataIndex: 'index',
+        valueType: 'index',
+        width: 60,
+    },{
+        title: '名称',
+        dataIndex: 'name',
+        sorter: true
+    },{
+        title: '代码',
+        dataIndex: 'code',
+        sorter: true
+    },{
+        title: '净利润',
+        dataIndex: 'net_earning',
+        sorter: true
+    },{
+        title: '总市值',
+        dataIndex: 'price',
+        sorter: true
+    },{
+        title: '导入时间',
+        dataIndex: 'created_time',
+        sorter: true
+    }];
 
-    const setModalMainVisible = (visible)=>{
-        dispatch({
-            type : "fund/setModalMainVisible",
-            payload : visible
-        })
-    }
-
+    
     const importProps = {
         name: 'file',
-        action:  `/api/fundpart/import`,
+        action:  `/api/stock/import`,
         showUploadList : false,
         data : {indexid:data.id,code:data.code},
         beforeUpload: file => {
-            if (file.type !== 'application/vnd.ms-excel') {
-                message.error(`只允许上传excel文件`);
+            var allowlist = ['application/vnd.ms-excel'];
+            if (allowlist.indexOf(file.type) == -1) {
+                message.error(`只允许上传xls文件`);
             }
-            return file.type === 'application/vnd.ms-excel';
+            return allowlist.indexOf(file.type) > -1;
         },
         onChange(info) {
             if(info.file.status == "uploading"){
@@ -65,37 +77,11 @@ const TableList = (props) => {
         },
     }
 
-    const columns = [{
-        title: '序号',
-        dataIndex: 'index',
-        valueType: 'index',
-        width: 60,
-    },{
-        title: '名称',
-        dataIndex: 'name',
-        sorter: true
-    },{
-        title: '代码',
-        dataIndex: 'code',
-        sorter: true
-    },{
-        title: '占比',
-        dataIndex: 'ratio',
-        sorter: true
-    },{
-        title: 'TTM市盈率',
-        dataIndex: 'pe_ttm',
-        sorter: true
-    },{
-        title: '导入时间',
-        dataIndex: 'created_time',
-        sorter: true
-    }];
-
     return (
         <>
+
             <ProTable
-                headerTitle="成分股列表"
+                headerTitle="查询表格"
                 actionRef={actionRef}
                 rowKey="key"
                 onChange={(_, _filter, _sorter) => {
@@ -122,10 +108,10 @@ const TableList = (props) => {
 };
 
 function mapStateToProps(state) {
-    const {base,fund} = state;
+    const {base,stock} = state;
     return {
         base,
-        fund
+        stock
     };
   }
 
